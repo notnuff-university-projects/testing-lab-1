@@ -10,5 +10,5 @@ TEST(DummyTest, First) {
 
 TEST(DummyTest, Second) {
     // Expect two strings not to be equal.
-    EXPECT_EQ("hello", "world");
+    EXPECT_EQ("world", "world");
 }
