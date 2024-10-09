@@ -32,3 +32,12 @@ target_link_libraries(tests-all ${GTESTLIBS})
 include(GoogleTest)
 gtest_discover_tests(lab1)
 gtest_discover_tests(tests-all)
+
+# Add post-build command to copy the file
+add_custom_command(
+        TARGET lab1
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/rsc"
+        "$<TARGET_FILE_DIR:lab1>/rsc"
+)
