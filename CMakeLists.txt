@@ -7,10 +7,16 @@ project(lab1)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp
+)
+
 file(GLOB_RECURSE COMPILATION_UNITS CONFIGURE_DEPENDS
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c++
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cс
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.inl
 )
 
 file(GLOB_RECURSE TESTS CONFIGURE_DEPENDS
@@ -22,9 +28,12 @@ file(GLOB_RECURSE TESTS CONFIGURE_DEPENDS
 set(GTESTLIBS GTest::gtest_main GTest::GTest GTest::Main)
 find_package(GTest REQUIRED)
 
-enable_testing()
+#enable_testing()
 
-add_executable(lab1 ${COMPILATION_UNITS})
+add_executable(lab1 ${COMPILATION_UNITS} ${HEADERS}
+        src/game/parser.cpp
+        src/game/parser.h)
+
 add_executable(tests-all ${TESTS})
 target_link_libraries(lab1 ${GTESTLIBS})
 target_link_libraries(tests-all ${GTESTLIBS})
