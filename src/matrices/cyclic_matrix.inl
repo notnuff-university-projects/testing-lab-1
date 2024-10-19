@@ -4,6 +4,13 @@
 #include "cyclic_matrix.h"
 
 template<typename ValueType>
+CyclicMatrix<ValueType>& CyclicMatrix<ValueType>::operator=(const std::vector<std::vector<ValueType>>& init_vectors) {
+  Matrix<ValueType>::operator=(init_vectors);
+
+  return *this;
+}
+
+template<typename ValueType>
 ValueType& CyclicMatrix<ValueType>::SelectRef(int element_number) {
   auto size = this->one_dimension_vector_.size();
   element_number %= size;

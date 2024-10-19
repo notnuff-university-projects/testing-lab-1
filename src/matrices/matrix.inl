@@ -18,6 +18,42 @@ const ProxyBracketHelper<ValueType> Matrix<ValueType>::operator[](const int row)
 
 
 template<typename ValueType>
+Matrix<ValueType>::Matrix(const std::vector<std::vector<ValueType>>& init_vectors) {
+  rows_ = init_vectors.size();
+  columns_ = init_vectors.front().size();
+  for(const auto &item : init_vectors) {
+    one_dimension_vector_.emplace(item.begin(), item.end());
+  }
+}
+
+template<typename ValueType>
+Matrix<ValueType>& Matrix<ValueType>::operator=(const std::vector<std::vector<ValueType>>& init_vectors) {
+  rows_ = init_vectors.size();
+  columns_ = init_vectors.front().size();
+  for(const auto &item : init_vectors) {
+    one_dimension_vector_.insert(
+          one_dimension_vector_.end(),
+          item.begin(),
+          item.end()
+        );
+  }
+  return *this;
+}
+
+template<typename ValueType>
+void Matrix<ValueType>::PrintMatrix() {
+  for(int i = 0; i < rows_; ++i) {
+    for (int j = 0; j < columns_; ++j) {
+      std::cout << SelectRef(i, j) << " ";
+    }
+    std::cout << "\n";
+  }
+  std::cout << "\n";
+
+}
+
+
+template<typename ValueType>
 Matrix<ValueType>::Matrix()
     : rows_(0), columns_(0) {
 

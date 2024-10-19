@@ -1,7 +1,6 @@
 #include "game.h"
 #include "../matrices/cyclic_matrix.h"
 
-
 CyclicMatrix<NCellType> GameOfLife::GetNextState(const CyclicMatrix<NCellType>& currentState) {
   auto rows = currentState.Rows();
   auto cols = currentState.Columns();
@@ -22,9 +21,6 @@ void GameOfLife::WriteState(const CyclicMatrix<NCellType> &state) {
 }
 
 NCellType GameOfLife::GetCellNextState(int row, int column, const CyclicMatrix<NCellType> &currentState) {
-  if(row == 1 && column == 1) {
-    auto a = 0;
-  }
   auto neighboursCount = GetNeighboursCount(row, column, currentState);
   auto currentCellState = currentState[row][column];
 

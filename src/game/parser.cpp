@@ -1,6 +1,5 @@
 #include <fstream>
 #include "parser.h"
-#include "../matrices/cyclic_matrix.h"
 
 std::pair<int, CyclicMatrix<NCellType>> FileParser::ParseGameInput(const std::string &filePath) {
   std::ifstream file;

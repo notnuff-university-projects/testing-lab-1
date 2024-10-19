@@ -12,6 +12,8 @@ class CyclicMatrix : public Matrix<ValueType> {
  public:
   using Matrix<ValueType>::Matrix;
 
+  CyclicMatrix& operator=(const std::vector<std::vector<ValueType>>& init_vectors);
+
   virtual ~CyclicMatrix()=default;
 
   ValueType& SelectRef(int row, int column) override;
@@ -19,6 +21,7 @@ class CyclicMatrix : public Matrix<ValueType> {
   const ValueType &SelectRef(int element_number) const override;
   ValueType& SelectRef(int element_number) override;
 };
+
 
 #include "cyclic_matrix.inl"
 

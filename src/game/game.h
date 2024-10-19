@@ -14,7 +14,8 @@ class GameOfLife {
   int GetNeighboursCount(int row, int column, const CyclicMatrix<NCellType>& gameField);
 
  protected:
-  inline NCellType GetCellNextState(int row, int column, const CyclicMatrix<NCellType>& currentState);
+  NCellType GetCellNextState(int row, int column, const CyclicMatrix<NCellType>& currentState);
+
  protected:
   std::vector<CyclicMatrix<NCellType>> history;
 };

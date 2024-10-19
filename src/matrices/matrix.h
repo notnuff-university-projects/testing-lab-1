@@ -31,6 +31,9 @@ class Matrix {
 
   Matrix(Matrix&& other) noexcept; // rvalue constructor (move construct) for da speed when returning from function
 
+  explicit Matrix(const std::vector<std::vector<ValueType>>& init_vectors);
+  Matrix& operator=(const std::vector<std::vector<ValueType>>& init_vectors);
+
   Matrix& operator=(const Matrix& other);
   Matrix& operator=(Matrix&& other) noexcept; //rvalue copy assigment operator for da speed
 
@@ -67,17 +70,6 @@ class Matrix {
   std::vector<ValueType> one_dimension_vector_;
 };
 
-template<typename ValueType>
-void Matrix<ValueType>::PrintMatrix() {
-  for(int i = 0; i < rows_; ++i) {
-    for (int j = 0; j < columns_; ++j) {
-      std::cout << SelectRef(i, j) << " ";
-    }
-    std::cout << "\n";
-  }
-  std::cout << "\n";
-
-}
 
 template<typename ValueType>
 class ProxyBracketHelper {
