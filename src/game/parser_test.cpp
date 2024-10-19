@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 
-TEST(ParserTest, GetNeighboursCount) {
+TEST(ParserTest, ParseTestFile) {
   std::string testFile = "./rsc/test-input.txt";
   CyclicMatrix<NCellType> expected;
   expected = std::vector<std::vector<NCellType>>{
