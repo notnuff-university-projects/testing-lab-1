@@ -10,12 +10,14 @@
 template<typename ValueType>
 class CyclicMatrix : public Matrix<ValueType> {
  public:
-  CyclicMatrix()=default;
+  using Matrix<ValueType>::Matrix;
+
   virtual ~CyclicMatrix()=default;
 
-  ValueType& SelectRef(unsigned int row, unsigned int column) override;
-
-  ValueType& SelectRef(unsigned int element_number) override;
+  ValueType& SelectRef(int row, int column) override;
+  const ValueType &SelectRef(int row, int column) const override;
+  const ValueType &SelectRef(int element_number) const override;
+  ValueType& SelectRef(int element_number) override;
 };
 
 #include "cyclic_matrix.inl"

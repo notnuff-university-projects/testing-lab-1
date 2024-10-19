@@ -1,7 +1,8 @@
 #include <fstream>
 #include "parser.h"
+#include "../matrices/cyclic_matrix.h"
 
-Matrix<NCellType> FileParser::ParseGameField(const std::string &filePath) {
+std::pair<int, CyclicMatrix<NCellType>> FileParser::ParseGameInput(const std::string &filePath) {
   std::ifstream file;
   file.open(filePath);
   std::string currentLine;
@@ -18,7 +19,7 @@ Matrix<NCellType> FileParser::ParseGameField(const std::string &filePath) {
   iss >> cols >> rows;
 
   // todo: normal Matrix class (circular)
-  Matrix<NCellType> gameField(rows, cols);
+  CyclicMatrix<NCellType> gameField(rows, cols);
 
   for(int i = 0; i < rows; ++i) {
     if( !std::getline(file, currentLine) ) break;
@@ -27,7 +28,7 @@ Matrix<NCellType> FileParser::ParseGameField(const std::string &filePath) {
       if(currChar == '.') {
         gameField[i][j] = NCellType::Dead;
       } else if(currChar == 'x') {
-        gameField[i][j] = NCellType::Live;
+        gameField[i][j] = NCellType::Alive;
       } else {
         std::stringstream fmt;
         fmt << "Unknown character: " << currChar;
@@ -36,5 +37,5 @@ Matrix<NCellType> FileParser::ParseGameField(const std::string &filePath) {
     }
   }
 
-  return gameField;
+  return {numOfGenerations, gameField};
 }

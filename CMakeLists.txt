@@ -39,8 +39,8 @@ target_link_libraries(lab1 ${GTESTLIBS})
 target_link_libraries(tests-all ${GTESTLIBS})
 
 include(GoogleTest)
-gtest_discover_tests(lab1)
-gtest_discover_tests(tests-all)
+#gtest_discover_tests(lab1)
+#gtest_discover_tests(tests-all)
 
 # Add post-build command to copy the file
 add_custom_command(

@@ -5,7 +5,7 @@
 namespace NNCellType {
   enum NCellType {
     Dead = 0,
-    Live = 1,
+    Alive = 1,
     Size = 2
   };
 }

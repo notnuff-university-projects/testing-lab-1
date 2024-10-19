@@ -6,16 +6,20 @@
 #include <sstream>
 
 template<typename ValueType>
-ProxyBracketHelper<ValueType> &Matrix<ValueType>::operator[](const unsigned int row) {
-  helper_.SetRow(row);
-  return helper_;
+ProxyBracketHelper<ValueType> Matrix<ValueType>::operator[](const int row) {
+  return ProxyBracketHelper<ValueType>(this, row);
+}
+
+template<typename ValueType>
+const ProxyBracketHelper<ValueType> Matrix<ValueType>::operator[](const int row) const {
+  const auto proxy = ProxyBracketHelper<ValueType>(const_cast<Matrix<ValueType>*>(this), row);
+  return proxy;
 }
 
 
 template<typename ValueType>
 Matrix<ValueType>::Matrix()
-    : helper_(ProxyBracketHelper(this)),
-      rows_(0), columns_(0) {
+    : rows_(0), columns_(0) {
 
       }
 
@@ -26,7 +30,6 @@ Matrix<ValueType> &Matrix<ValueType>::operator=(Matrix &&other) noexcept {
     rows_ = other.rows_;
     columns_ = other.columns_;
     one_dimension_vector_ = std::move(other.one_dimension_vector_);
-    helper_ = std::move(other.helper_);
 
 // Invalidate the other matrix
     other.rows_ = 0;
@@ -39,22 +42,41 @@ Matrix<ValueType> &Matrix<ValueType>::operator=(Matrix &&other) noexcept {
 template<typename ValueType>
 Matrix<ValueType>::Matrix(Matrix &&other) noexcept
     : rows_(other.rows_), columns_(other.columns_),
-      one_dimension_vector_(std::move(other.one_dimension_vector_)),
-      helper_(std::move(other.helper_)) {
+      one_dimension_vector_(std::move(other.one_dimension_vector_)) {
 
   // Invalidate the other matrix
   other.rows_ = 0;
   other.columns_ = 0;
 }
 
+template<typename ValueType>
+Matrix<ValueType>& Matrix<ValueType>::operator=(const Matrix &other)  {
+  if (this != &other) {
+    rows_ = other.rows_;
+    columns_ = other.columns_;
+    one_dimension_vector_ = other.one_dimension_vector_;
+    // Recalculate other dependent members if needed
+    Recalculate();
+  }
+
+  return *this;
+}
 
 template<typename ValueType>
-ValueType Matrix<ValueType>::Select(unsigned int element_number) {
+Matrix<ValueType>::Matrix(const Matrix &other)
+    : rows_(other.rows_),
+      columns_(other.columns_),
+      one_dimension_vector_(other.one_dimension_vector_) {
+
+}
+
+template<typename ValueType>
+ValueType Matrix<ValueType>::Select(int element_number) const {
   return SelectRef(element_number);
 }
 
 template<typename ValueType>
-ValueType& Matrix<ValueType>::SelectRef(unsigned int element_number) {
+ValueType& Matrix<ValueType>::SelectRef(int element_number) {
   if( one_dimension_vector_.size() <= element_number ) {
     std::stringstream err;
     err << "Elements in matrix: " << rows_ * columns_
@@ -67,18 +89,23 @@ ValueType& Matrix<ValueType>::SelectRef(unsigned int element_number) {
 }
 
 template<typename ValueType>
-bool Matrix<ValueType>::IsOutOfBounds(unsigned int row, unsigned int column) {
+const ValueType& Matrix<ValueType>::SelectRef(int element_number) const {
+  return const_cast<Matrix<ValueType>*>(this)->SelectRef(element_number);
+}
+
+template<typename ValueType>
+bool Matrix<ValueType>::IsOutOfBounds(int row, int column) const {
   if(rows_ <= row || columns_ <= column) return true;
   return false;
 }
 
 template<typename ValueType>
-ValueType Matrix<ValueType>::Select(unsigned int row, unsigned int column) {
+ValueType Matrix<ValueType>::Select(int row, int column) const {
   return SelectRef(row, column);
 }
 
 template<typename ValueType>
-ValueType& Matrix<ValueType>::SelectRef(unsigned int row, unsigned int column) {
+ValueType& Matrix<ValueType>::SelectRef(int row, int column) {
   if( IsOutOfBounds(row, column) ) {
     std::stringstream err;
     err << "Matrix dimensions:" << "\n"
@@ -90,35 +117,39 @@ ValueType& Matrix<ValueType>::SelectRef(unsigned int row, unsigned int column) {
     throw std::out_of_range( err.str() );
   }
 
-  return one_dimension_vector_[row * columns_ + column];
+  return SelectRef(row * columns_ + column);
 }
 
 template<typename ValueType>
-void Matrix<ValueType>::Columns(unsigned int count) {
+const ValueType& Matrix<ValueType>::SelectRef(int row, int column) const {
+  return const_cast<Matrix<ValueType>*>(this)->SelectRef(row, column);
+}
+
+template<typename ValueType>
+void Matrix<ValueType>::Columns(int count) {
   columns_ = count;
 }
 
 template<typename ValueType>
-unsigned int Matrix<ValueType>::Columns() {
+int Matrix<ValueType>::Columns() const {
   return columns_;
 }
 
 template<typename ValueType>
-unsigned int Matrix<ValueType>::Rows() {
+int Matrix<ValueType>::Rows() const {
   return rows_;
 }
 
 template<typename ValueType>
-void Matrix<ValueType>::Rows(unsigned int count) {
+void Matrix<ValueType>::Rows(int count) {
   rows_ = count;
 }
 
 template<typename ValueType>
 Matrix<ValueType>::Matrix(
-    unsigned int rows,
-    unsigned int columns)
-    : helper_(this),
-      rows_(rows), columns_(columns) {
+    int rows,
+    int columns)
+    : rows_(rows), columns_(columns) {
   Recalculate();
 }
 

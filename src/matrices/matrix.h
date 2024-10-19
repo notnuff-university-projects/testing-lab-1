@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <sstream>
 #include <functional>
+#include <iostream>
+#include <iomanip>
 
 // the basic matrix class, providing easy two-dimensional array
 
@@ -24,58 +26,82 @@ class ProxyBracketHelper;
 template<typename ValueType>
 class Matrix {
  public:
-  Matrix();
-  Matrix(Matrix&& other) noexcept;
-  Matrix& operator=(Matrix&& other) noexcept;
+  Matrix(); // default constructor
+  Matrix(const Matrix& other); // copy constructor for da vector
 
-  Matrix(unsigned int rows, unsigned int columns);
+  Matrix(Matrix&& other) noexcept; // rvalue constructor (move construct) for da speed when returning from function
+
+  Matrix& operator=(const Matrix& other);
+  Matrix& operator=(Matrix&& other) noexcept; //rvalue copy assigment operator for da speed
+
+  Matrix(int rows, int columns);
   virtual ~Matrix()=default;
 
-  void Rows(unsigned int count);
-  unsigned int Rows();
+  void Rows(int count);
+  int Rows() const;
 
-  void Columns(unsigned int count);
-  unsigned int Columns();
+  void Columns(int count);
+  int Columns() const;
 
-  ValueType Select(unsigned int row, unsigned int column);
-  virtual ValueType& SelectRef(unsigned int row, unsigned int column);
-  ValueType Select(unsigned int element_number);
-  virtual ValueType& SelectRef(unsigned int element_number);
+  ValueType Select(int row, int column) const;
+  virtual ValueType& SelectRef(int row, int column);
+  virtual const ValueType& SelectRef(int row, int column) const;
 
-  bool IsOutOfBounds(unsigned int row, unsigned int column);
+  ValueType Select(int element_number) const;
+  virtual ValueType& SelectRef(int element_number);
+  virtual const ValueType& SelectRef(int element_number) const;
 
-  ProxyBracketHelper<ValueType>& operator[] (unsigned int row);
+  bool IsOutOfBounds(int row, int column) const;
+
+  void PrintMatrix();
+
+  ProxyBracketHelper<ValueType> operator[] (int row);
+  const ProxyBracketHelper<ValueType> operator[] (int row) const;
 
  protected:
   void Recalculate();
 
-  unsigned int rows_;
-  unsigned int columns_;
-
-  ProxyBracketHelper<ValueType> helper_;
+  int rows_;
+  int columns_;
 
   std::vector<ValueType> one_dimension_vector_;
 };
+
+template<typename ValueType>
+void Matrix<ValueType>::PrintMatrix() {
+  for(int i = 0; i < rows_; ++i) {
+    for (int j = 0; j < columns_; ++j) {
+      std::cout << SelectRef(i, j) << " ";
+    }
+    std::cout << "\n";
+  }
+  std::cout << "\n";
+
+}
 
 template<typename ValueType>
 class ProxyBracketHelper {
   public:
   ProxyBracketHelper()=delete;
 
-  explicit ProxyBracketHelper(Matrix<ValueType>* matrix_p)
-      : owner_matrix_(matrix_p), current_row_(0) {}
+  explicit ProxyBracketHelper(Matrix<ValueType>* matrix_p, int row)
+      : owner_matrix_(matrix_p), current_row_(row) {}
 
-  void SetRow(const unsigned int row) {
+  void SetRow(const int row) {
     current_row_ = row;
   }
 
-  ValueType& operator[] (const unsigned int column) {
+  ValueType& operator[] (const int column) {
+    return owner_matrix_->SelectRef(current_row_, column);
+  };
+
+  const ValueType& operator[] (const int column) const {
     return owner_matrix_->SelectRef(current_row_, column);
   };
 
  protected:
   Matrix<ValueType>* owner_matrix_;
-  unsigned int current_row_;
+  int current_row_;
 };
 
 #include "matrix.inl"
