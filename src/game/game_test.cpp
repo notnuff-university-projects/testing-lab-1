@@ -1,8 +1,11 @@
 #include "game.h"
 #include "../matrices/cyclic_matrix.h"
+#include "helper_functions_test.h"
 #include <gtest/gtest.h>
 
+
 class GameOfLifeTest : public GameOfLife, public testing::Test {
+
  protected:
   void SetUp() override {
     {
@@ -31,11 +34,51 @@ class GameOfLifeTest : public GameOfLife, public testing::Test {
       };
       testStateEdging = vec;
     }
+    {
+      // 9 by 5 matrix with random placement
+      auto vecSample = std::vector<std::vector<NCellType>>{
+          {NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Alive},
+          {NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead},
+          {NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Dead},
+          {NCellType::Dead, NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Alive},
+          {NCellType::Alive, NCellType::Dead, NCellType::Dead, NCellType::Alive, NCellType::Dead},
+          {NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead},
+          {NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Alive},
+          {NCellType::Dead, NCellType::Dead, NCellType::Alive, NCellType::Alive, NCellType::Dead},
+          {NCellType::Alive, NCellType::Dead, NCellType::Dead, NCellType::Alive, NCellType::Dead},
+      };
+      testStateRandom = vecSample;
+
+      auto vecAnswer = std::vector<std::vector<NCellType>>{
+          {NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Dead},
+          {NCellType::Dead, NCellType::Dead, NCellType::Dead, NCellType::Alive, NCellType::Dead},
+          {NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Alive},
+          {NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Alive},
+          {NCellType::Alive, NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead},
+          {NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead},
+          {NCellType::Alive, NCellType::Dead, NCellType::Dead, NCellType::Dead, NCellType::Alive},
+          {NCellType::Alive, NCellType::Dead, NCellType::Alive, NCellType::Dead, NCellType::Dead},
+          {NCellType::Alive, NCellType::Dead, NCellType::Dead, NCellType::Dead, NCellType::Dead},
+      };
+      testStateRandomNext = vecAnswer;
+
+    }
   }
 
+ protected:
   CyclicMatrix<NCellType> testStateNormal;
   CyclicMatrix<NCellType> testStateEdging;
+  CyclicMatrix<NCellType> testStateRandom;
+  CyclicMatrix<NCellType> testStateRandomNext;
+
 };
+
+
+TEST_F(GameOfLifeTest, GetNeighboursCount) {
+  EXPECT_EQ(2, GetNeighboursCount(3, 2, testStateRandom));
+  EXPECT_EQ(2, GetNeighboursCount(8, 0, testStateRandom));
+  EXPECT_EQ(4, GetNeighboursCount(4, 4, testStateRandom));
+}
 
 TEST_F(GameOfLifeTest, GetCellNextStateCasual) {
   EXPECT_EQ(NCellType::Alive, GetCellNextState(3, 0, testStateNormal)); // new live left
@@ -64,4 +107,24 @@ TEST_F(GameOfLifeTest, GetCellNextStateEdging) {
   EXPECT_EQ(NCellType::Alive, GetCellNextState(3, 3, testStateEdging)); // new live left (positive column)
   EXPECT_EQ(NCellType::Alive, GetCellNextState(3, 0, testStateEdging)); // old life live center
   EXPECT_EQ(NCellType::Dead, GetCellNextState(2, 0, testStateEdging)); // old life die top
+}
+
+TEST_F(GameOfLifeTest, GetNextState) {
+  auto gotResult = GetNextState(testStateRandom);
+  auto& expectedResult = testStateRandomNext;
+  CompareMatrices(gotResult, expectedResult);
+}
+
+TEST_F(GameOfLifeTest, WriteInHistory) {
+  WriteState(testStateNormal);
+  WriteState(testStateEdging);
+  WriteState(testStateRandom);
+  WriteState(testStateRandomNext);
+
+  ASSERT_EQ(history.size(), 4);
+  CompareMatrices(history[0], testStateNormal);
+  CompareMatrices(history[1], testStateEdging);
+  CompareMatrices(history[2], testStateRandom);
+  CompareMatrices(history[3], testStateRandomNext);
+
 }

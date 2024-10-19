@@ -6,7 +6,7 @@
 
 int main(int argc, char **argv) {
   // todo: normal parsing
-/*  std::string testFile;
+  std::string testFile;
 
   if(argc > 1) {
     testFile = argv[1];
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     currentState = game.GetNextState(currentState);
     currentState.PrintMatrix();
 
-  }*/
+  }
 
   return 0;
 }
