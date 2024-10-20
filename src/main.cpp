@@ -5,19 +5,18 @@
 #include "game/game.h"
 
 int main(int argc, char **argv) {
-  // todo: normal parsing
-  std::string testFile;
+  std::string testFileIn;
 
   if(argc > 1) {
-    testFile = argv[1];
+    testFileIn = argv[1];
   } else {
-    testFile = "./rsc/test-input.txt";
+    testFileIn = "./rsc/test-input.txt";
   }
 
   FileParser parser;
   GameOfLife game;
 
-  auto initialState = parser.ParseGameInput(testFile);
+  auto initialState = parser.ParseGameInput(testFileIn);
 
   auto currentState = initialState.second;
   std::cout << currentState.GetPrintableMatrix();
@@ -27,5 +26,13 @@ int main(int argc, char **argv) {
     std::cout << currentState.GetPrintableMatrix();
   }
 
+  std::string testFileOut;
+  if(argc > 2) {
+    testFileOut = argv[2];
+  } else {
+    testFileOut = "./rsc/test-output.txt";
+  }
+
+  parser.WriteGameOutput(game, testFileOut);
   return 0;
 }
