@@ -17,7 +17,7 @@ CyclicMatrix<NCellType> GameOfLife::GetNextState(const CyclicMatrix<NCellType>& 
 
 
 void GameOfLife::WriteState(const CyclicMatrix<NCellType> &state) {
-  history.push_back(state);
+  history_.push_back(state);
 }
 
 NCellType GameOfLife::GetCellNextState(int row, int column, const CyclicMatrix<NCellType> &currentState) {
@@ -50,4 +50,7 @@ int GameOfLife::GetNeighboursCount(int row, int column, const CyclicMatrix<NCell
     neighboursCount++;
   }
   return neighboursCount;
+}
+const std::vector<CyclicMatrix<NCellType>> &GameOfLife::History() {
+  return history_;
 }

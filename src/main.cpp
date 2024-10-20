@@ -20,12 +20,11 @@ int main(int argc, char **argv) {
   auto initialState = parser.ParseGameInput(testFile);
 
   auto currentState = initialState.second;
-  currentState.PrintMatrix();
+  std::cout << currentState.GetPrintableMatrix();
   for(int i = 0; i < initialState.first; ++i){
     game.WriteState(currentState);
     currentState = game.GetNextState(currentState);
-    currentState.PrintMatrix();
-
+    std::cout << currentState.GetPrintableMatrix();
   }
 
   return 0;

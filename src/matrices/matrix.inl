@@ -41,15 +41,17 @@ Matrix<ValueType>& Matrix<ValueType>::operator=(const std::vector<std::vector<Va
 }
 
 template<typename ValueType>
-void Matrix<ValueType>::PrintMatrix() {
+std::string Matrix<ValueType>::GetPrintableMatrix() const {
+  std::stringstream ss;
   for(int i = 0; i < rows_; ++i) {
     for (int j = 0; j < columns_; ++j) {
-      std::cout << SelectRef(i, j) << " ";
+      ss << SelectRef(i, j) << " ";
     }
-    std::cout << "\n";
+    ss << "\n";
   }
-  std::cout << "\n";
+  ss << "\n";
 
+  return ss.str();
 }
 
 

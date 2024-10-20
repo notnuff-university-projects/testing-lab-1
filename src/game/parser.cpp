@@ -1,5 +1,6 @@
 #include <fstream>
 #include "parser.h"
+#include "game.h"
 
 std::pair<int, CyclicMatrix<NCellType>> FileParser::ParseGameInput(const std::string &filePath) {
   std::ifstream file;
@@ -35,6 +36,23 @@ std::pair<int, CyclicMatrix<NCellType>> FileParser::ParseGameInput(const std::st
       }
     }
   }
+  file.close();
 
   return {numOfGenerations, gameField};
+}
+
+bool FileParser::WriteGameOutput(GameOfLife &game, const std::string &filePath) {
+  std::ofstream file;
+  file.open(filePath);
+
+  auto numOfGenerations = game.History().size();
+  file << "Number of generations ran: " << numOfGenerations;
+  if(numOfGenerations == 0) return false;
+
+  const auto& lastState = game.History().back();
+  file << "Rows: " << lastState.Rows() << " Columns: " << lastState.Columns();
+  file << "\n";
+  file << lastState.GetPrintableMatrix();
+
+  return true;
 }

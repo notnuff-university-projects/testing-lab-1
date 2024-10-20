@@ -121,10 +121,10 @@ TEST_F(GameOfLifeTest, WriteInHistory) {
   WriteState(testStateRandom);
   WriteState(testStateRandomNext);
 
-  ASSERT_EQ(history.size(), 4);
-  CompareMatrices(history[0], testStateNormal);
-  CompareMatrices(history[1], testStateEdging);
-  CompareMatrices(history[2], testStateRandom);
-  CompareMatrices(history[3], testStateRandomNext);
+  ASSERT_EQ(history_.size(), 4);
+  CompareMatrices(history_[0], testStateNormal);
+  CompareMatrices(history_[1], testStateEdging);
+  CompareMatrices(history_[2], testStateRandom);
+  CompareMatrices(history_[3], testStateRandomNext);
 
 }

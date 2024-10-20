@@ -56,7 +56,7 @@ class Matrix {
 
   bool IsOutOfBounds(int row, int column) const;
 
-  void PrintMatrix();
+  std::string GetPrintableMatrix() const;
 
   ProxyBracketHelper<ValueType> operator[] (int row);
   const ProxyBracketHelper<ValueType> operator[] (int row) const;
